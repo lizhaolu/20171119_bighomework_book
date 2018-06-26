@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <!--<constant name="struts.multipart.saveDir" value="d:/file/"/>-->
+    <package name="load" extends="struts-default">
+        <interceptors>
+            <interceptor class="nuc.sw.interceptor.LoginInterceptor" name="login"/>
+        </interceptors>
+        <action class="nuc.sw.action.upload.UploadAction" name="uploadAction" method="uploadMethod">
+            <interceptor-ref name="fileUpload">
+                <param name="allowedExtensions">jpg,jpeg,png,pnm</param>
+                <param name="maximumSize">10240000</param>
+                <param name="allowedTypes">
+                    image/jpeg,image/png,image/bmp,image/bmp,image/png,image/gif,image/jpg,
+                    imagepeg ,image/bmp, image/gif, image/x-png,
+                </param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"/>
+            <param name="savePath">d:/class/</param>
+            <!--<result name="uploadOk" type="redirectAction">uploadListAction</result>-->
+            <result name="uploadOk" type="chain">show</result>
+            <result name="uploadFail">/upload.jsp</result>
+            <result name="input">/upload.jsp</result>
+        </action>
+
+        <!--<action class="nuc.sw.action.upload.UploadAction" name="uploadListAction" method="uploadList">-->
+        <!--<param name="savePath">d:/class/</param>-->
+        <!--<result name="uploadListOk">/success.jsp</result>-->
+        <!--</action>-->
+
+        <action class="nuc.sw.action.download.DownloadAction" name="downloadAction">
+            <result name="success" type="stream">
+                <param name="contentType">${contentType}</param>
+                <param name="inputName">targetFile</param>
+                <param name="contentDisposition">attachment;filename=${downFileName}</param>
+            </result>
+            <result name="login">/login.jsp</result>
+            <interceptor-ref name="defaultStack"/>
+            <interceptor-ref name="login"/>
+        </action>
+
+        <action name="show" class="nuc.sw.action.download.DownloadAction" method="showAll">
+            <result name="success">success.jsp</result>
+        </action>
+
+        <action class="nuc.sw.action.login.LoginAction" name="loginAction" method="loginMethod">
+            <result name="loginFail">/login.jsp</result>
+            <result name="input">/login.jsp</result>
+            <result name="loginOK">loginOK.jsp</result>
+            <result name="loginNull">/register.jsp</result>
+            <!--<result name="loginOK" type="chain">uploadListAction</result>-->
+        </action>
+
+        <action name="registerAction" class="nuc.sw.action.register.RegisterAction" method="registerMethod">
+            <result name="registerOK">/login.jsp</result>
+            <result name="registerFail">/register.jsp</result>
+            <result name="input">/register.jsp</result>
+        </action>
+
+        <action name="randomCode" class="nuc.sw.action.code.CodeAction"/>
+
+
+        <action name="FindByUsername" class="nuc.sw.action.update.FindUsernameAction" method="find">
+            <result name="OK">/showUser.jsp</result>
+            <result name="input">/showPicture.jsp</result>
+        </action>
+
+        <action name="updateuser" class="nuc.sw.action.update.UpdateAction" method="updateUser">
+            <result name="success">updateUser.jsp</result>
+            <result name="fail">show.action</result>
+        </action>
+    </package>
+</struts>
